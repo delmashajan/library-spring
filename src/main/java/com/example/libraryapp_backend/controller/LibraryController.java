@@ -23,5 +23,9 @@ public class LibraryController {
     public String Bookentry(){
         return "Book Entry";
     }
+    @PostMapping("/delete")
+    public String Deletebook(){
+        return "delete entry";
+    }
 
 }
