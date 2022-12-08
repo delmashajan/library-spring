@@ -1,48 +1,58 @@
 package com.example.libraryapp_backend.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.libraryapp_backend.dao.BookDao;
+import com.example.libraryapp_backend.model.Book;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 
 public class LibraryController {
 
-    @PostMapping("/")
-    public String Adminpage(){
-        return "admin page";
+    @Autowired
+    private BookDao dao;
+
+    @CrossOrigin(origins = "*")
+
+    @PostMapping(path = "/add",consumes = "application/json",produces = "application/json")
+    public Map<String,String> Addbook(@RequestBody Book b)
+    {
+        System.out.println(b.getTitle().toString());
+        dao.save(b);
+        HashMap<String,String> map = new HashMap<>();
+        map.put("status","success");
+
+        return map;
     }
-    @PostMapping("/login")
-    public String Userlogin(){
-        return "Userlogin";
-    }
-    @PostMapping("/register")
-    public String Userregister(){
-        return "User register";
-    }
-    @PostMapping("/entry")
-    public String Bookentry(){
-        return "Book Entry";
-    }
-    @PostMapping("/delete")
-    public String Deletebook(){
-        return "delete entry";
-    }
-    @PostMapping("/edit")
-    public String Editbook(){
-        return "edit book";
-    }
-    @PostMapping("/issue")
-    public String Issuebook(){
-        return "issue book";
-    }
-    @PostMapping("/search")
-    public String Searchbook(){
-        return "searchbook";
-    }
+    @CrossOrigin(origins = "*")
     @GetMapping("/view")
-    public String Viewbook(){
-        return "view book";
+    public List<Book> Viewbook(){
+        return (List<Book>) dao.findAll();
     }
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/search",consumes = "application/json",produces = "application/json")
+    public List<Book> Searchbook(@RequestBody Book b){
+        String title=String.valueOf(b.getTitle());
+        System.out.println(title);
+        return (List<Book>) dao.Searchbook(b.getTitle());
+
+    }
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/delete",consumes = "application/json",produces = "application/json")
+    public Map<String,String> delete(@RequestBody Book b){
+        String id = String.valueOf(b.getId());
+        System.out.println(id);
+        dao.deleteBook(b.getId());
+
+        HashMap<String,String> map=new HashMap<>();
+        map.put("status","success");
+        return map;
+
+    }
+
 
 }
